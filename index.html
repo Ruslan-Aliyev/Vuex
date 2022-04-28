@@ -1,0 +1,62 @@
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/vuex@4.0.2/dist/vuex.global.js"></script>
+
+<div id="app">
+  <h1>{{ welcome }}</h1>
+  <h1>{{ message }}</h1>
+  <h1>{{ message1 }}</h1>
+
+  <h2>{{ count }}</h2>
+  <button @click="pressed">Increment Counter</button>
+</div>
+
+<script>
+  const store = new Vuex.Store({
+    state: {
+      message: 'Hello From Vuex',
+      count: 0
+    },
+    mutations: { // always sync
+      increment(state, payload) {
+        state.count += payload;
+      }
+    },
+    actions: { // async or sync, eg when have setTimeout
+      increment(state, payload) {
+        state.commit('increment', payload);
+      }
+    },
+    getters: {
+      message(state) {
+        return state.message.toUpperCase();
+      },
+      counter(state) {
+        return state.count;
+      }
+    }
+  });
+  Vue.createApp({
+    data() {
+      return {
+        welcome: 'Hello Vue!'
+      }
+    },
+    computed: {
+      message() {
+        return store.state.message; // Grabbing from Store state
+      },
+      message1() {
+        return store.getters.message; // Grabbing from Store getters
+      },
+      count() {
+        return store.getters.counter;
+      }
+    },
+    methods: {
+      pressed() {
+        // store.commit('increment', 10); // Call mutator 'increment'
+        store.dispatch('increment', 10); // Call action 'increment'
+      }
+    }
+  }).mount('#app')
+</script>
